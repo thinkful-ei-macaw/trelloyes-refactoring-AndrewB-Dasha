@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import List from "./List";
 import "./App.css";
-import STORE from "./STORE"
+import STORE from "./STORE";
 // import Card from "./Card";
 
 export default class App extends Component {
-  
   state = {
     store: STORE
-  }
+  };
 
   /*
   addCard = listId => {
@@ -40,7 +39,6 @@ export default class App extends Component {
   }
 
   newRandomCard = () => {
-    
     const id =
       Math.random()
         .toString(36)
@@ -48,7 +46,7 @@ export default class App extends Component {
       Math.random()
         .toString(36)
         .substring(2, 4);
-    
+
     return {
       id,
       title: `Random Card ${id}`,
@@ -56,36 +54,56 @@ export default class App extends Component {
     };
   };
 
-  handleAddItem = (listId) => {
+  handleAddItem = listId => {
     console.log("handle add item called");
     const newCard = this.newRandomCard();
     console.log(listId);
-   
+
     const newList = this.state.store.lists.map(list => {
       if (list.id === listId) {
         return {
           ...list,
           cardIds: [...list.cardIds, newCard.id]
         };
-      } 
-        return list;
-      });
+      }
+      return list;
+    });
 
-      this.setState({
-        store: {
-          lists: newList,
-          allCards: {
-            ...this.state.store.allCards,
-            [newCard.id]: newCard
-          }
+    this.setState({
+      store: {
+        lists: newList,
+        allCards: {
+          ...this.state.store.allCards,
+          [newCard.id]: newCard
         }
-        
-      })
-    };
+      }
+    });
+  };
 
-    
-    
+  handleDeleteCard = cardId => {
+    const { lists, allCards } = this.state.store;
+    function omit(obj, keyToOmit) {
+      return Object.entries(obj).reduce(
+        (newObj, [key, value]) =>
+          key === keyToOmit ? newObj : { ...newObj, [key]: value },
+        {}
+      );
+    }
 
+    const newLists = lists.map(list => ({
+      ...list,
+      cardIds: list.cardIds.filter(id => id !== cardId)
+    }));
+
+    const newCards = omit(allCards, cardId);
+
+    this.setState({
+      store: {
+        lists: newLists,
+        allCards: newCards
+      }
+    });
+  };
 
   render() {
     const { store } = this.state;
