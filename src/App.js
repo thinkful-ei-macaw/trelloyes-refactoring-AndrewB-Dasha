@@ -3,14 +3,20 @@ import List from "./List";
 import "./App.css";
 
 export default class App extends React.Component {
-  state = {
-    lists: [],
-    allCards: {}
-  };
 
-  handleClick = () => {
-    console.log("clicked");
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      store: props.store
+    }
+  }
+  
+  static defaultProps = {
+      store: {
+        lists: [],
+        allCards: {}
+    }
+  }
 
   handleDeleteItem() {
     console.log("handle delete item called");
