@@ -1,22 +1,15 @@
 import React, { Component } from "react";
 import List from "./List";
 import "./App.css";
-import Card from "./Card";
+import STORE from "./STORE"
+// import Card from "./Card";
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      store: props.store
-    };
+export default class App extends Component {
+  
+  state = {
+    store: STORE
   }
 
-  static defaultProps = {
-    store: {
-      lists: [],
-      allCards: {}
-    }
-  };
   /*
   addCard = listId => {
     const myCardId = 12345;
@@ -31,42 +24,71 @@ export default class App extends React.Component {
     });
   };
 */
-  render() {
-    const list = this.state.list.map(item => (
-      <Card
-        key={item.id}
-        text={item.text}
-        handleClick={() => this.printId(item.id)}
-      />
-    ));
-    return <ul>{list}</ul>;
-  }
+  // render() {
+  //   const list = this.state.list.map(item => (
+  //     <Card
+  //       key={item.id}
+  //       text={item.text}
+  //       handleClick={() => this.printId(item.id)}
+  //     />
+  //   ));
+  //   return <ul>{list}</ul>;
+  // }
 
   handleDeleteItem() {
     console.log("handle delete item called");
   }
 
-  handleAddItem = () => {
-    console.log("handle add item called");
-    const newRandomCard = () => {
-      const id =
-        Math.random()
-          .toString(36)
-          .substring(2, 4) +
-        Math.random()
-          .toString(36)
-          .substring(2, 4);
-      return {
-        id,
-        title: `Random Card ${id}`,
-        content: "lorem ipsum"
-      };
+  newRandomCard = () => {
+    
+    const id =
+      Math.random()
+        .toString(36)
+        .substring(2, 4) +
+      Math.random()
+        .toString(36)
+        .substring(2, 4);
+    
+    return {
+      id,
+      title: `Random Card ${id}`,
+      content: "lorem ipsum"
     };
-    this.setState({ id: newRandomCard() });
   };
 
+  handleAddItem = (listId) => {
+    console.log("handle add item called");
+    const newCard = this.newRandomCard();
+    console.log(listId);
+   
+    const newList = this.state.store.lists.map(list => {
+      if (list.id === listId) {
+        return {
+          ...list,
+          cardIds: [...list.cardIds, newCard.id]
+        };
+      } 
+        return list;
+      });
+
+      this.setState({
+        store: {
+          lists: newList,
+          allCards: {
+            ...this.state.store.allCards,
+            [newCard.id]: newCard
+          }
+        }
+        
+      })
+    };
+
+    
+    
+
+
   render() {
-    const { store } = this.props;
+    const { store } = this.state;
     return (
       <main className="App">
         <header className="App-header">
@@ -76,6 +98,7 @@ export default class App extends React.Component {
           {store.lists.map(list => (
             <List
               key={list.id}
+              id={list.id}
               header={list.header}
               cards={list.cardIds.map(id => store.allCards[id])}
               handleDeleteItem={this.handleDeleteItem}

@@ -15,11 +15,10 @@ export default function List(props) {
             title={card.title}
             content={card.content}
             onDeleteItem={props.handleDeleteItem}
-            onAddItem={props.handleAddItem}
           />
         ))}
         <button
-          onClick={props.onAddItem}
+          onClick={() => props.onAddItem(props.id)}
           type="button"
           className="List-add-button"
         >
@@ -28,4 +27,8 @@ export default function List(props) {
       </div>
     </section>
   );
+}
+
+List.defaultProps = {
+  onClickAdd: () => {},
 }
